@@ -1,0 +1,55 @@
+{
+   "abstract" : "Database::Migrator implementation for MySQL",
+   "author" : [
+      "Dave Rolsky <autarch@urth.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.300014, CPAN::Meta::Converter version 2.120900",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Database-Migrator-mysql",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "DBD::mysql" : "0",
+            "DBI" : "0",
+            "Database::Migrator::Core" : "0",
+            "Database::Migrator::Types" : "0",
+            "File::Slurp" : "0",
+            "IPC::Run3" : "0",
+            "Moose" : "0",
+            "strict" : "0",
+            "warnings" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "mailto" : "bug-database-migrator-mysql@rt.cpan.org",
+         "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=Database-Migrator-mysql"
+      },
+      "repository" : {
+         "type" : "git",
+         "url" : "git://git.urth.org/Database-Migrator-mysql.git",
+         "web" : "http://git.urth.org/Database-Migrator-mysql.git"
+      }
+   },
+   "version" : "0.01"
+}
+
