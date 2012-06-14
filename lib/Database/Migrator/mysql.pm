@@ -1,6 +1,6 @@
 package Database::Migrator::mysql;
 {
-  $Database::Migrator::mysql::VERSION = '0.01';
+  $Database::Migrator::mysql::VERSION = '0.02';
 }
 
 use strict;
@@ -117,13 +117,15 @@ Database::Migrator::mysql - Database::Migrator implementation for MySQL
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
   package MyApp::Migrator;
 
-  use parent 'Database::Migrator::mysql';
+  use Moose;
+
+  extends 'Database::Migrator::mysql';
 
   has '+database' => (
       required => 0,
