@@ -1,6 +1,6 @@
 package Database::Migrator::mysql;
 {
-  $Database::Migrator::mysql::VERSION = '0.03';
+  $Database::Migrator::mysql::VERSION = '0.04';
 }
 
 use strict;
@@ -141,7 +141,7 @@ Database::Migrator::mysql - Database::Migrator implementation for MySQL
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -160,6 +160,25 @@ version 0.03
 
 This module provides a L<Database::Migrator> implementation for MySQL. See
 L<Database::Migrator> and L<Database::Migrator::Core> for more documentation.
+
+=head1 ATTRIBUTES
+
+This class adds several attributes in addition to those implemented by
+L<Database::Migrator::Core>:
+
+=over 4
+
+=item * character_set
+
+The character set of the database. This is only used when creating a new
+database. This is optional.
+
+=item * collation
+
+The collation of the database. This is only used when creating a new
+database. This is optional.
+
+=back
 
 =head1 AUTHOR
 
