@@ -1,11 +1,13 @@
 package Database::Migrator::mysql;
 {
-  $Database::Migrator::mysql::VERSION = '0.02';
+  $Database::Migrator::mysql::VERSION = '0.03';
 }
 
 use strict;
 use warnings;
+use namespace::autoclean;
 
+use Database::Migrator 0.05;
 use Database::Migrator::Types qw( Str );
 use DBD::mysql;
 use DBI;
@@ -28,22 +30,6 @@ has collation => (
     predicate => '_has_collation',
 );
 
-sub _build_database_exists {
-    my $self = shift;
-
-    my $databases;
-    run3(
-        [ $self->_cli_args(), '-e', 'SHOW DATABASES' ],
-        \undef,
-        \$databases,
-        \undef,
-    );
-
-    my $database = $self->database();
-
-    return $databases =~ /\Q$database\E/;
-}
-
 sub _create_database {
     my $self = shift;
 
@@ -63,9 +49,24 @@ sub _create_database {
     return;
 }
 
+sub _drop_database {
+    my $self = shift;
+
+    my $database = $self->database();
+
+    $self->logger()->info("Dropping the $database database");
+
+    my $drop_ddl = "DROP DATABASE IF EXISTS $database";
+
+    $self->_run_command(
+        [ $self->_cli_args(), qw(  --batch -e ), $drop_ddl ] );
+}
+
 sub _run_ddl {
     my $self = shift;
-    my $ddl  = shift;
+    my $file = shift;
+
+    my $ddl = read_file( $file->stringify() );
 
     $self->_run_command(
         [ $self->_cli_args(), '--database', $self->database(), '--batch' ],
@@ -77,7 +78,7 @@ sub _cli_args {
     my $self = shift;
 
     my @cli = 'mysql';
-    push @cli, '-u' . $self->user()     if defined $self->user();
+    push @cli, '-u' . $self->username() if defined $self->username();
     push @cli, '-p' . $self->password() if defined $self->password();
     push @cli, '-h' . $self->host()     if defined $self->host();
     push @cli, '-P' . $self->port()     if defined $self->port();
@@ -85,20 +86,43 @@ sub _cli_args {
     return @cli;
 }
 
-sub _build_dbh {
-    my $self = shift;
+sub _run_command {
+    my $self    = shift;
+    my $command = shift;
+    my $input   = shift;
 
-    return DBI->connect(
-        'dbi:mysql:' . $self->database(),
-        $self->user(),
-        $self->password(),
-        {
-            RaiseError         => 1,
-            PrintError         => 0,
-            PrintWarn          => 1,
-            ShowErrorStatement => 1,
-        },
-    );
+    my $stdout = q{};
+    my $stderr = q{};
+
+    my $handle_stdout = sub {
+        $self->logger()->debug(@_);
+
+        $stdout .= $_ for @_;
+    };
+
+    my $handle_stderr = sub {
+        $self->logger()->debug(@_);
+
+        $stderr .= $_ for @_;
+    };
+
+    $self->logger()->debug("Running command: [@{$command}]");
+
+    return if $self->dry_run();
+
+    run3( $command, \$input, $handle_stdout, $handle_stderr );
+
+    if ($?) {
+        my $exit = $? >> 8;
+
+        my $msg = "@{$command} returned an exit code of $exit\n";
+        $msg .= "\nSTDOUT:\n$stdout\n\n" if length $stdout;
+        $msg .= "\nSTDERR:\n$stderr\n\n" if length $stderr;
+
+        die $msg;
+    }
+
+    return $stdout;
 }
 
 __PACKAGE__->meta()->make_immutable();
@@ -107,8 +131,8 @@ __PACKAGE__->meta()->make_immutable();
 
 #ABSTRACT: Database::Migrator implementation for MySQL
 
-
 __END__
+
 =pod
 
 =head1 NAME
@@ -117,7 +141,7 @@ Database::Migrator::mysql - Database::Migrator implementation for MySQL
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -143,11 +167,10 @@ Dave Rolsky <autarch@urth.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2012 by MaxMind, LLC.
+This software is Copyright (c) 2013 by MaxMind, LLC.
 
 This is free software, licensed under:
 
   The Artistic License 2.0 (GPL Compatible)
 
 =cut
-

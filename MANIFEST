@@ -8,6 +8,7 @@ Makefile.PL
 README
 dist.ini
 lib/Database/Migrator/mysql.pm
+t/author-live-test.t
 t/compile.t
 t/release-cpan-changes.t
 t/release-eol.t
