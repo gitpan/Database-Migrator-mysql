@@ -22,7 +22,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "DBD::mysql" => 0,
     "DBI" => 0,
-    "Database::Migrator" => "0.05",
+    "Database::Migrator" => "0.07",
     "Database::Migrator::Core" => 0,
     "Database::Migrator::Types" => 0,
     "File::Slurp" => 0,
@@ -33,9 +33,11 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
-    "Test::More" => 0
+    "File::Find" => 0,
+    "File::Temp" => 0,
+    "Test::More" => "0.88"
   },
-  "VERSION" => "0.04",
+  "VERSION" => "0.05",
   "test" => {
     "TESTS" => "t/*.t"
   }

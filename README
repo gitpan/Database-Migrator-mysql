@@ -1,11 +1,11 @@
 
 
 This archive contains the distribution Database-Migrator-mysql,
-version 0.04:
+version 0.05:
 
   Database::Migrator implementation for MySQL
 
-This software is Copyright (c) 2013 by MaxMind, LLC.
+This software is Copyright (c) 2013 by MaxMind, Inc..
 
 This is free software, licensed under:
 
